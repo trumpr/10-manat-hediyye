@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="az">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>PUL ÇIXART</title>
+    <style>
+      :root {
+        --bg: #0d47a1;
+        --panel: #0b3b85;
+        --text: #fff;
+        --accent: #ffd600;
+        --win: #00e676;
+        --lose: #ff5252;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header {
+        padding: 14px;
+        text-align: center;
+        font-weight: 900;
+        font-size: 22px;
+        background: color-mix(in oklab, var(--panel), black 6%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .card {
+        background: color-mix(in oklab, var(--panel), black 6%);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 24px;
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+      }
+      .card h2 {
+        margin: 0 0 12px;
+        font-size: 20px;
+      }
+      .btn {
+        display: block;
+        width: 100%;
+        margin-top: 12px;
+        padding: 14px;
+        font-weight: 900;
+        border: none;
+        border-radius: 16px;
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35),
+          inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      }
+      .btn.cashout {
+        background: linear-gradient(180deg, #43a047, #2e7d32);
+      }
+      .btn.back {
+        background: linear-gradient(180deg, #1e88e5, #1565c0);
+      }
+    </style>
+
+<style>
+  #confirmBtn {
+     text-decoration: none;  
+    background-color: #adf321;   /* göy rəng */
+    color: rgb(18, 17, 17);                /* yazı ağ */
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;          /* yumru künclər */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  #confirmBtn:hover {
+    background-color: #1976d2;   /* hover effekti – tünd göy */
+  }
+
+  #confirmBtn:active {
+    background-color: #0d47a1;   /* basanda daha tünd */
+  }
+</style>
+
+  </head>
+  <body>
+    <header>PUL ÇIXART</header>
+
+    <main>
+      <div class="card">
+        <h2>Balansından pul çıxarmaq</h2>
+        <p>Balansdan pulu ancaq kartiniza çıxara bilərsiniz.</p>
+        <a href="final.html" id="confirmBtn">Çıxarışı təsdiqlə</a>
+
+        <button class="btn back" onclick="window.location.href='index.html'">
+  ⬅ Oyuna Qayıt
+</button>
+
+</button>
+        </button>
+      </div>
+    </main>
+  </body>
+</html>

