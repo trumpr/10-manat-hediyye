@@ -4,7 +4,13 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
     />
     <title>Plinko — Real Fizika (Səsli)</title>
     <style>
@@ -17,145 +23,87 @@
         --win: #00e676;
         --lose: #ff5252;
       }
-      @media (max-width: 600px) {
-        .legend .slot {
-          padding: 2px;
-          font-size: 9px;
-        }
-      }
-      * {
-        box-sizing: border-box;
-      }
       html,
       body {
-        height: 100%;
         margin: 0;
-      }
-      body {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
         background: var(--bg);
         color: var(--text);
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-        display: grid;
-        grid-template-rows: auto 1fr auto;
-        gap: 10px;
+        font-family: sans-serif;
       }
-      header {
-        padding: 12px 14px;
-        display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        gap: 10px;
+      header,
+      footer {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
         align-items: center;
+        gap: 10px;
       }
       .stat {
-        background: color-mix(in oklab, var(--panel), black 6%);
-        border: 1px solid color-mix(in oklab, var(--panel), white 12%);
-        border-radius: 14px;
-        padding: 10px 12px;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 8px 12px;
+        border-radius: 12px;
         text-align: center;
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
-      }
-      .stat b {
-        display: block;
-        font-size: 12px;
-        opacity: 0.85;
-      }
-      .stat span {
-        font-weight: 800;
       }
       .bets {
         display: flex;
-        gap: 8px;
-        justify-content: center;
+        gap: 6px;
       }
       .chip {
         background: #ffca28;
-        color: #1a1a1a;
         border: none;
         border-radius: 999px;
-        padding: 8px 12px;
-        font-weight: 800;
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+        padding: 6px 10px;
+        font-weight: 700;
       }
       .chip.active {
-        outline: 3px solid rgba(255, 255, 255, 0.35);
+        outline: 2px solid #fff;
       }
       main {
-        padding: 0 12px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
       }
       #board {
+        flex: 1;
         width: 100%;
-        height: 60vh;
-        max-height: 720px;
-        background: var(--bg);
-        border-radius: 22px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        box-shadow: inset 0 10px 28px rgba(0, 0, 0, 0.35);
-        display: block;
+        height: 100%;
       }
       .legend {
         display: flex;
-        gap: 6px;
-        padding: 8px 2px;
-        font-weight: 800;
-      }
-      .legend .slot {
-        flex: 1 1 auto;
-        text-align: center;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 10px;
+        gap: 4px;
         padding: 6px;
       }
-      footer {
-        padding: 10px 14px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
+      .slot {
+        flex: 1;
+        text-align: center;
+        font-size: 12px;
+        padding: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+      }
+      #play,
+      #cashout,
+      #addMoney {
+        padding: 12px;
+        font-weight: 700;
+        border: none;
+        border-radius: 12px;
       }
       #play {
-        width: 100%;
+        flex: 1;
         background: linear-gradient(180deg, #1e88e5, #1565c0);
         color: #fff;
-        border: none;
-        border-radius: 16px;
-        font-weight: 900;
-        letter-spacing: 0.3px;
-        padding: 16px;
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35),
-          inset 0 1px 0 rgba(255, 255, 255, 0.25);
-      }
-      #play:disabled {
-        opacity: 0.6;
-        filter: grayscale(0.3);
       }
       #cashout {
         background: #ffca28;
-        color: #1a1a1a;
-        border: none;
-        border-radius: 16px;
-        font-weight: 900;
-        letter-spacing: 0.3px;
-        padding: 14px 20px;
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
-        width: 70%;
+        color: #000;
       }
       #addMoney {
         background: #00e676;
         color: #fff;
-        border: none;
-        border-radius: 12px;
-        font-weight: 800;
-        padding: 8px 14px;
-        font-size: 14px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      #addMoney::before {
-        content: "💵";
-        font-size: 14px;
       }
     </style>
   </head>
@@ -164,18 +112,16 @@
       <div class="stat"><b>Balans</b><span id="bal">0.00 AZN</span></div>
       <div>
         <div class="bets" id="bets"></div>
-        <div style="text-align: center; font-size: 12px; opacity: 0.9">
+        <div style="text-align: center; font-size: 12px">
           Mərc: <span id="betLbl">0.20</span> AZN
         </div>
       </div>
       <div class="stat"><b>Uduş</b><span id="lastWin">0.00 AZN</span></div>
     </header>
-
     <main>
       <canvas id="board"></canvas>
       <div class="legend" id="legend"></div>
     </main>
-
     <footer>
       <button id="play">OYNA</button>
       <button id="cashout">PUL ÇIXART</button>
@@ -183,29 +129,25 @@
     </footer>
 
     <script>
-      document.getElementById("cashout").addEventListener("click", () => {
-        window.location.href = "cashout.html";
-      });
-
       // ==== Parametrlər ====
       const START_BALANCE = 10.0;
       const BET_OPTIONS = [0.2, 0.5, 1.0, 2];
       const MULTIPLIERS = [5, 3, 0.3, 0.2, 0.2, 0.3, 3, 5];
-      const PEG_ROWS = 7;
-      const GRAVITY = 0.35;
-      const RESTITUTION = 0.65;
-      const AIR_DRAG = 0.999;
-      const MAX_VX = 4.2;
-      const SUBSTEPS = 2;
+      const PEG_ROWS = 7,
+        GRAVITY = 0.35,
+        RESTITUTION = 0.65,
+        AIR_DRAG = 0.999,
+        MAX_VX = 4.2,
+        SUBSTEPS = 2;
 
-      const canvas = document.getElementById("board");
-      const ctx = canvas.getContext("2d");
-      const balEl = document.getElementById("bal");
-      const lastWinEl = document.getElementById("lastWin");
-      const legendEl = document.getElementById("legend");
-      const playBtn = document.getElementById("play");
-      const betLbl = document.getElementById("betLbl");
-      const betsWrap = document.getElementById("bets");
+      const canvas = document.getElementById("board"),
+        ctx = canvas.getContext("2d");
+      const balEl = document.getElementById("bal"),
+        lastWinEl = document.getElementById("lastWin");
+      const legendEl = document.getElementById("legend"),
+        playBtn = document.getElementById("play");
+      const betLbl = document.getElementById("betLbl"),
+        betsWrap = document.getElementById("bets");
       const addBtn = document.getElementById("addMoney");
 
       let DPR = 1,
@@ -213,17 +155,17 @@
         H = 0;
       let balance =
         parseFloat(localStorage.getItem("plinko_balance")) || START_BALANCE;
-      let bet = BET_OPTIONS[0];
-      let ball = null;
-      let pegs = [],
-        walls = [];
-      let slotLineY = 0;
+      let bet = BET_OPTIONS[0],
+        ball = null,
+        pegs = [],
+        walls = [],
+        slotLineY = 0;
 
-      // ==== Web Audio API (yumşaq səs) ====
+      // ==== Səs ====
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       function playSound() {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+        const osc = audioCtx.createOscillator(),
+          gain = audioCtx.createGain();
         osc.type = "sine";
         osc.frequency.value = 700 + Math.random() * 250;
         gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
@@ -243,13 +185,11 @@
       function formatAZN(v) {
         return v.toFixed(2) + " AZN";
       }
-
       function setBet(v) {
         bet = v;
         betLbl.textContent = bet.toFixed(2);
         Array.from(betsWrap.children).forEach((btn) => {
-          const val = +btn.dataset.v;
-          btn.classList.toggle("active", Math.abs(val - bet) < 1e-6);
+          btn.classList.toggle("active", +btn.dataset.v === bet);
         });
         updateButtons();
       }
@@ -260,7 +200,7 @@
         saveBalance();
       }
       function updateButtons() {
-        playBtn.disabled = balance < bet; // << düzəliş olundu
+        playBtn.disabled = balance < bet;
       }
 
       BET_OPTIONS.forEach((v) => {
@@ -276,13 +216,12 @@
         DPR = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
         const rect = canvas.getBoundingClientRect();
         W = Math.floor(rect.width);
-        H = Math.max(340, Math.floor(rect.height));
+        H = Math.floor(rect.height);
         canvas.width = Math.floor(W * DPR);
         canvas.height = Math.floor(H * DPR);
         ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
         buildBoard();
       }
-
       function buildBoard() {
         pegs = [];
         const marginX = 26,
@@ -293,9 +232,9 @@
         const colsTop = 1,
           pegR = 4.5;
         for (let r = 0; r < PEG_ROWS; r++) {
-          const cols = colsTop + r;
-          const gap = usableW / (cols - 1);
-          const y = topY + r * rowGap;
+          const cols = colsTop + r,
+            gap = usableW / (cols - 1),
+            y = topY + r * rowGap;
           for (let c = 0; c < cols; c++) {
             const x = marginX + c * gap;
             pegs.push({ x, y, r: pegR });
@@ -308,7 +247,6 @@
         slotLineY = H - 60;
         drawStatic();
       }
-
       function drawStatic() {
         ctx.clearRect(0, 0, W, H);
         ctx.fillStyle =
@@ -328,8 +266,8 @@
           ctx.lineTo(w.x, w.y2);
           ctx.stroke();
         });
-        const n = MULTIPLIERS.length;
-        const slotW = W / n;
+        const n = MULTIPLIERS.length,
+          slotW = W / n;
         ctx.beginPath();
         ctx.moveTo(0, slotLineY);
         ctx.lineTo(W, slotLineY);
@@ -350,7 +288,6 @@
           legendEl.appendChild(d);
         });
       }
-
       function reflectVelocity(vx, vy, nx, ny) {
         const dot = vx * nx + vy * ny;
         vx = vx - (1 + RESTITUTION) * dot * nx;
@@ -360,7 +297,6 @@
       function clamp(v, min, max) {
         return Math.max(min, Math.min(max, v));
       }
-
       function dropBall() {
         ball = {
           x: W / 2,
@@ -373,19 +309,17 @@
         };
         updateButtons();
       }
-
       function settleAndPay() {
-        const n = MULTIPLIERS.length;
-        const slotW = W / n;
+        const n = MULTIPLIERS.length,
+          slotW = W / n;
         let idx = Math.floor(clamp(ball.x, 0, W - 1) / slotW);
         idx = clamp(idx, 0, n - 1);
-        const mult = MULTIPLIERS[idx];
-        const win = +(bet * mult).toFixed(2);
+        const mult = MULTIPLIERS[idx],
+          win = +(bet * mult).toFixed(2);
         balance = +(balance + win).toFixed(2);
         updateHUD(win);
         ball = null;
       }
-
       function step(dt) {
         if (!ball) return;
         for (let s = 0; s < SUBSTEPS; s++) {
@@ -404,12 +338,11 @@
               }
             }
           });
-          for (let i = 0; i < pegs.length; i++) {
-            const p = pegs[i];
+          for (let p of pegs) {
             const dx = ball.x - p.x,
-              dy = ball.y - p.y;
-            const dist = Math.hypot(dx, dy);
-            const minD = ball.r + p.r;
+              dy = ball.y - p.y,
+              dist = Math.hypot(dx, dy),
+              minD = ball.r + p.r;
             if (dist < minD) {
               let nx = dx / (dist || 1e-6),
                 ny = dy / (dist || 1e-6);
@@ -440,7 +373,6 @@
           settleAndPay();
         }
       }
-
       function draw() {
         drawStatic();
         if (ball) {
@@ -456,7 +388,6 @@
           ctx.shadowBlur = 0;
         }
       }
-
       let last = 0;
       function loop(ts) {
         const dt = Math.min(32, ts - last || 16);
@@ -466,20 +397,32 @@
         requestAnimationFrame(loop);
       }
 
+      // ==== Fullscreen API ====
+      function goFullscreen() {
+        const el = document.documentElement;
+        if (el.requestFullscreen) {
+          el.requestFullscreen();
+        } else if (el.webkitRequestFullscreen) {
+          el.webkitRequestFullscreen();
+        }
+      }
+
       playBtn.addEventListener("click", () => {
+        goFullscreen();
         if (balance < bet) return;
         balance = +(balance - bet).toFixed(2);
         updateHUD(0);
         dropBall();
       });
-
       addBtn.addEventListener("click", () => {
         balance = +(balance + 0).toFixed(2);
         updateHUD(0);
       });
+      document.getElementById("cashout").addEventListener("click", () => {
+        window.location.href = "cashout.html";
+      });
 
       window.addEventListener("resize", sizeCanvas);
-
       sizeCanvas();
       setBet(bet);
       updateHUD(0);
